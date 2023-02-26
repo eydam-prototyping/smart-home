@@ -1,0 +1,38 @@
+openapi: 3.0.2
+info:
+  title: API for Air Conditioning System
+  version: 1.0.0
+servers:
+  - url: https://ac1:3000
+  - url: https://ac2:3000
+  - url: https://ac3:3000
+paths:
+  /state:
+    get:
+      summary: returns a json object with the state of the air conditioning system
+      operationId: getState
+      responses:
+        '200':
+          description: the current state of the air conditioning system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/state'
+              examples:
+                normalResponse:
+                  $ref: '#/components/examples/stateNormalResponse'
+
+components:
+  schemas:
+    state:
+      type: object
+      required:
+        - powerState
+        - temperatureSet
+        - temperatureMeas
+        - mode
+        - errorState
+        - timestamp
+  examples:
+    stateNormalResponse:
+      value: {"powerState":"off", "temperatureSet":21.5, "temperatureMeas":23.0, "mode": cooling, "errorState": "no error", "timestamp": 1677429491}
