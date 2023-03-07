@@ -1,0 +1,89 @@
+openapi: 3.0.2
+info:
+  title: API for Air Conditioning System
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/apitest/ac
+  - url: https://ac1:3000
+  - url: https://ac2:3000
+  - url: https://ac3:3000
+paths:
+  /state:
+    get:
+      summary: Returns a json object with the state of the air conditioning system
+      operationId: state
+      responses:
+        '200':
+          description: the current state of the air conditioning system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getState'
+              examples:
+                normalResponse:
+                  $ref: '#/components/examples/stateNormalResponse'
+    post:
+      summary: Sets a new state
+      operationId: state
+      requestBody:
+        description: The new state
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/postState'
+      responses:
+        '200':
+          description: The current state of the air conditioning system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getState'
+              examples:
+                normalResponse:
+                  $ref: '#/components/examples/stateNormalResponse'
+        '400':
+          description: Request body malformatted
+
+    options:
+      description: Pre Flight Request
+      responses:
+        '200':
+          description: OK
+        
+  
+
+  /config/time:
+    get:
+      summary: get the system time
+      operationId: get_config_time
+      responses:
+        '200':
+          description: the system time
+    post:
+      summary: set the system time
+      operationId: post_config_time
+      responses:
+        '200':
+          description: time has been set
+
+components:
+  schemas:
+    getState:
+      type: object
+      required:
+        - powerState
+        - temperatureSet
+        - temperatureMeas
+        - mode
+        - errorState
+        - timestamp
+    postState:
+      type: object
+      enum:
+        - powerState
+        - temperatureSet
+        - mode
+  examples:
+    stateNormalResponse:
+      value: {"powerState":"off", "temperatureSet":21.5, "temperatureMeas":23.0, "mode": cooling, "errorState": "no error", "timestamp": 1677429491}
