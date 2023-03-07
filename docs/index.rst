@@ -4,13 +4,13 @@
    contain the root `toctree` directive.
 
 Welcome to Eydam-Prototyping's smart-home documentation!
-======================================
+========================================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+   api
 
 Indices and tables
 ==================
