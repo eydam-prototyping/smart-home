@@ -9,6 +9,10 @@ If you want to run it in debug mode, just add the debug flag::
 
     flask --app ./test/apitest/ run --debug
 
+If you want to make it accessible from another PC from the local network, use::
+    
+    flask --app ./test/apitest/ run --debug --host <IP_OF_TEST_SERVER>
+
 When the server is running, you can access a random state for the Air Conditioning System via::
     
     http://localhost:5000/apitest/ac/state

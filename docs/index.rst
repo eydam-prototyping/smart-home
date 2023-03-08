@@ -11,6 +11,7 @@ Welcome to Eydam-Prototyping's smart-home documentation!
    :caption: Contents:
 
    api
+   home_assistant 
 
 Indices and tables
 ==================
