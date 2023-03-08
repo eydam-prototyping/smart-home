@@ -7,7 +7,7 @@ If you want to integrate the devices into Home Assistant, you have to edit the `
 
 
 Integration of Air Conditioning System
-===============================
+======================================
 
 Example Code::
 
