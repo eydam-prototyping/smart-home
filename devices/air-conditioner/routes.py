@@ -15,27 +15,36 @@ def setup(sta_if, ac_state, adp):
     _adp = adp
 
 def reset(request: http_server.HttpRequest):
-    umachine.reset()
+    if request.method == "GET":
+        umachine.reset()
+    elif request.method == "OPTIONS":
+        return http_server.HttpResponse(request, "OK", headers={
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+        })
 
 def networkState(request: http_server.HttpRequest):
-    global _sta_if
-    ifconfig = _sta_if.ifconfig()
-    data = {
-        "ip": ifconfig[0],
-        "netmask": ifconfig[1],
-        "gateway": ifconfig[2],
-        "dns": ifconfig[3],
-        "ssid": _sta_if.config("essid"),
-        "mac": ":".join(["{:02X}".format(x) for x in _sta_if.config("mac")]),
-        "hostname": _sta_if.config("dhcp_hostname"),
-        "rssi": _sta_if.status("rssi")
-    }
-    return http_server.HttpResponse(request, data)
-
-def networkConfig(request: http_server.HttpRequest):
-    with open("wifi_credentials.json", "w") as f:
-        ujson.dump(request.body, f)
-    return http_server.HttpResponse(request, "OK")
+    if request.method == "GET":
+        global _sta_if
+        ifconfig = _sta_if.ifconfig()
+        data = {
+            "ip": ifconfig[0],
+            "netmask": ifconfig[1],
+            "gateway": ifconfig[2],
+            "dns": ifconfig[3],
+            "ssid": _sta_if.config("essid"),
+            "mac": ":".join(["{:02X}".format(x) for x in _sta_if.config("mac")]),
+            "hostname": _sta_if.config("dhcp_hostname"),
+            "rssi": _sta_if.status("rssi")
+        }
+        return http_server.HttpResponse(request, data)
+    elif request.method == "OPTIONS":
+        return http_server.HttpResponse(request, "OK", headers={
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+        })
 
 async def state(request: http_server.HttpRequest):
     if request.method == "GET":
@@ -147,9 +156,16 @@ async def state(request: http_server.HttpRequest):
             return http_server.HttpError(request, 500, "could not set new state")
 
         return http_server.HttpResponse(request, "OK")
+    elif request.method == "OPTIONS":
+        return http_server.HttpResponse(request, "OK", headers={
+            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+        })
     
 
 def raw_state(request: http_server.HttpRequest):
+    if request.method == "GET":
         global _ac_state
         if _ac_state is None:
             _ac_state = {}
@@ -166,3 +182,9 @@ def raw_state(request: http_server.HttpRequest):
             "errorState": _ac_state.get("ERROR", "OK"),
         }
         return http_server.HttpResponse(request, data)
+    elif request.method == "OPTIONS":
+        return http_server.HttpResponse(request, "OK", headers={
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+        })

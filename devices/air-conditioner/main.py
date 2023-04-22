@@ -54,7 +54,7 @@ adp = ac_adap.AcAdapter()
 
 routes.setup(sta_if, ac_state, adp)
 
-srv.async_routes["/state"] = (("GET", "POST"), routes.state)
+srv.async_routes["/state"] = (("GET", "POST", "OPTIONS"), routes.state)
 srv.routes["/rawState"] = (("GET", ), routes.raw_state)
 srv.routes["/reset"] = (("GET",), routes.reset)
 srv.routes["/networkState"] = (("GET",), routes.networkState)

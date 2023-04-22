@@ -106,7 +106,8 @@ class HttpResponse:
         else:
             self.headers = headers
         _default_headers = {
-            "Connection": "close"
+            "Connection": "close",
+            "Access-Control-Allow-Origin": "*"
             }
         
         if isinstance(self.data, str):
