@@ -3,7 +3,7 @@ import ujson
 import uos
 
 class HttpRequest:
-    def __init__(self, method, url, version, reader, writer):
+    def __init__(self, method: str, url: str, version: str, reader, writer):
         self.method = method
         self.url = url
         self.version = version
@@ -11,7 +11,7 @@ class HttpRequest:
         self.writer = writer
         self.headers = {}
 
-    async def _process_headers(self, ignore_headers=False):
+    async def _process_headers(self, ignore_headers:bool=False):
         while self.reader is not None:
             header_line = await self.reader.readline()
             header_items = header_line.decode("ascii").split(": ", 1)
