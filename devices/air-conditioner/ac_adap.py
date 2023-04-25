@@ -104,8 +104,8 @@ class AcResponse:
         return " ".join(["{:02x}".format(x) for x in self.raw])
 
 class AcAdapter:
-    def __init__(self):
-        self.uart = UART(2, baudrate=2400, tx=17, rx=16, parity=0)
+    def __init__(self, tx=17, rx=16):
+        self.uart = UART(2, baudrate=2400, tx=tx, rx=rx, parity=0)
         self.uart.init(timeout=50)
         self.swriter = uasyncio.StreamWriter(self.uart, {})
         self.sreader = uasyncio.StreamReader(self.uart)

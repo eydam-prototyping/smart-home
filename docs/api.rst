@@ -47,8 +47,7 @@ An example response could look like this::
       "temperatureSet": 24, 
       "temperatureRoom": 20,  
       "mode": "COOL", 
-      "vane": 
-      "SWING", 
+      "vane": "SWING", 
       "dir": "|", 
       "fan": "QUIET", 
       "errorState": "OK"
