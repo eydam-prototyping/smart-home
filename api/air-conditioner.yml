@@ -1,17 +1,16 @@
 openapi: 3.0.2
 info:
   title: API for Air Conditioning System
-  version: 1.0.0
+  version: 1.1.0
 servers:
   - url: http://localhost:5000/apitest/ac
-  - url: https://ac1:3000
-  - url: https://ac2:3000
-  - url: https://ac3:3000
+  - url: http://192.168.10.45
+  - url: http://192.168.178.231
+  - url: http://192.168.178.232
 paths:
   /state:
     get:
       summary: Returns a json object with the state of the air conditioning system
-      operationId: state
       responses:
         '200':
           description: the current state of the air conditioning system
@@ -24,7 +23,6 @@ paths:
                   $ref: '#/components/examples/stateNormalResponse'
     post:
       summary: Sets a new state
-      operationId: state
       requestBody:
         description: The new state
         required: true
@@ -34,56 +32,179 @@ paths:
               $ref: '#/components/schemas/postState'
       responses:
         '200':
-          description: The current state of the air conditioning system
+          description: OK, if the request was successful
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getState'
-              examples:
-                normalResponse:
-                  $ref: '#/components/examples/stateNormalResponse'
+            text/html:
+              example: OK
         '400':
           description: Request body malformatted
 
     options:
-      description: Pre Flight Request
+      summary: Pre Flight Request
       responses:
         '200':
           description: OK
-        
-  
 
-  /config/time:
+  /networkState:
     get:
-      summary: get the system time
-      operationId: get_config_time
+      summary: Returns a json object with the network state
       responses:
         '200':
-          description: the system time
-    post:
-      summary: set the system time
-      operationId: post_config_time
+          description: the current network state of the air conditioning system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getNetworkState'
+              examples:
+                normalResponse:
+                  $ref: '#/components/examples/networkStateNormalResponse'
+
+    options:
+      summary: Pre Flight Request
       responses:
         '200':
-          description: time has been set
+          description: OK
+
+  /reset:
+    get:
+      summary: Restart the air conditioning controller
+      responses:
+        default:
+          description: No response, just reboot
+
+    options:
+      summary: Pre Flight Request
+      responses:
+        '200':
+          description: OK
 
 components:
   schemas:
     getState:
       type: object
-      required:
-        - powerState
-        - temperatureSet
-        - temperatureMeas
-        - mode
-        - errorState
-        - timestamp
+      properties:
+        powerState:
+          type: string
+          enum:
+            - ON
+            - OFF
+        temperatureSet:
+          type: integer
+          minimum: 16
+          maximum: 31
+        temperatureRoom:
+          type: integer
+          minimum: 16
+          maximum: 31
+        mode:
+          type: string
+          enum:
+            - HEAT
+            - COOL
+            - DRY
+            - FAN
+            - AUTO
+        vane:
+          type: string
+          enum:
+            - AUTO
+            - SWING
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+        dir:
+          type: string
+          enum:
+            - SWING
+            - "<<"
+            - "<"
+            - "|"
+            - ">"
+            - ">>"
+            - "<>"
+        fan:
+          type: string
+          enum:
+            - AUTO
+            - QUIET
+            - 1
+            - 2
+            - 3
+            - 4
+        errorState:
+          type: string
     postState:
       type: object
-      enum:
-        - powerState
-        - temperatureSet
-        - mode
+      properties:
+        powerState:
+          type: string
+          enum:
+            - ON
+            - OFF
+        temperatureSet:
+          type: integer
+          minimum: 16
+          maximum: 31
+        mode:
+          type: string
+          enum:
+            - HEAT
+            - COOL
+            - DRY
+            - FAN
+            - AUTO
+        vane:
+          type: string
+          enum:
+            - AUTO
+            - SWING
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+        dir:
+          type: string
+          enum:
+            - SWING
+            - "<<"
+            - "<"
+            - "|"
+            - ">"
+            - ">>"
+            - "<>"
+        fan:
+          type: string
+          enum:
+            - AUTO
+            - QUIET
+            - 1
+            - 2
+            - 3
+            - 4
+    getNetworkState:
+      type: object
+      properties:
+        ssid:
+          type: string
+        rssi:
+          type: integer
+        mac:
+          type: string
+        ip: 
+          type: string
+        gateway: 
+          type: string
+        netmask: 
+          type: string
+        dns: 
+          type: string
+        hostname: 
+          type: string
   examples:
     stateNormalResponse:
-      value: {"powerState":"off", "temperatureSet":21.5, "temperatureMeas":23.0, "mode": cooling, "errorState": "no error", "timestamp": 1677429491}
+      value: {"powerState": "OFF", "temperatureSet": 24, "temperatureRoom": 20,  "mode": "COOL", "vane": "SWING", "dir": "|", "fan": "QUIET", "errorState": "OK"}
+    networkStateNormalResponse:
+      value: {"ssid": "WiFi", "rssi": -85, "mac": "XX:XX:XX:XX:XX:XX", "hostname": "AC1", "ip": "192.168.178.231", "gateway": "192.168.178.1", "netmask": "255.255.255.0", "dns": "192.168.178.1"}

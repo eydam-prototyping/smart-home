@@ -12,6 +12,7 @@ Welcome to Eydam-Prototyping's smart-home documentation!
 
    api
    home_assistant 
+   CN105_protocol
 
 Indices and tables
 ==================

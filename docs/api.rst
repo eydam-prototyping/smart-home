@@ -40,6 +40,20 @@ Responses
 | 200   | ``application/json`` | The current state of the air conditioning system |
 +-------+----------------------+--------------------------------------------------+
 
+An example response could look like this::
+
+    {
+      "powerState": "OFF", 
+      "temperatureSet": 24, 
+      "temperatureRoom": 20,  
+      "mode": "COOL", 
+      "vane": "SWING", 
+      "dir": "|", 
+      "fan": "QUIET", 
+      "errorState": "OK"
+    }
+
+The property errorState is currently always "OK".
 
 POST /state
 -----------
@@ -49,16 +63,54 @@ Request body
 ^^^^^^^^^^^^
 The new state as json object. Allowed keys are:
 
-* powerState (string: on, off)
-* temperatureSet (decimal: 16 - 28.5)
-* mode (string: heating, drying, cooling, fan)
+* powerState (string: ON, OFF)
+* temperatureSet (decimal: 16 - 31)
+* mode (string: HEAT, DRY, COOL, FAN)
+* vane (string: AUTO, SWING, 1, 2, 3, 4, 5)
+* dir (string: SWING, \<\<, \<, \|, \>,\>\>, \<\>)
+* fan (string: AUTO, QUIET, 1, 2, 3, 4)
 
 Responses
 ^^^^^^^^^
-+-------+----------------------+--------------------------------------------------+
-| Code  | Media Type           | Description                                      |
-+=======+======================+==================================================+
-| 200   | ``application/json`` | The current state of the air conditioning system |
-+-------+----------------------+--------------------------------------------------+
-| 400   | ``plain/text``       | Request body malformatted                        |
-+-------+----------------------+--------------------------------------------------+
++------+----------------+-----------------------------------------------------+
+| Code | Media Type     | Description                                         |
++======+================+=====================================================+
+| 200  | ``plain/text`` | OK, if the state has been set, otherwise error code |
++------+----------------+-----------------------------------------------------+
+| 400  | ``plain/text`` | Request body malformatted                           |
++------+----------------+-----------------------------------------------------+
+
+GET /networkState
+-----------------
+Returns a json object with the network state
+
+
+Responses
+^^^^^^^^^
++------+----------------------+----------------------------------------------------------+
+| Code | Media Type           | Description                                              |
++======+======================+==========================================================+
+| 200  | ``application/json`` | The current network state of the air conditioning system |
++------+----------------------+----------------------------------------------------------+
+
+An example response could look like this::
+
+    {
+      "ssid": "WiFi",
+      "rssi": -85,
+      "mac": "XX:XX:XX:XX:XX:XX",
+      "hostname": "AC1",
+      "ip": "192.168.178.231",
+      "gateway": "192.168.178.1",
+      "netmask": "255.255.255.0",
+      "dns": "192.168.178.1"
+    }
+
+GET /reset
+-----------------
+Restarts the air conditioning controller.
+
+
+Responses
+^^^^^^^^^
+No Response will be send.
