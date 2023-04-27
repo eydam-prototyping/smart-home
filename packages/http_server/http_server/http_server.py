@@ -97,7 +97,10 @@ class HttpResponse:
             _default_headers["Content-Type"] = "application/json"
         elif isinstance(self.data, tuple):
             if self.data[0] == "file":
-                _default_headers["Content-Length"] = os.stat(self.data[2])[6]-2
+                if sys.platform == "win32":
+                    _default_headers["Content-Length"] = os.stat(self.data[2])[6]-2
+                else:
+                    _default_headers["Content-Length"] = os.stat(self.data[2])[6]
                 _default_headers["Content-Type"] = self.data[1]
 
         if default_headers:
