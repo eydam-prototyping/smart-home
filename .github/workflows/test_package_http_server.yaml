@@ -21,5 +21,4 @@ jobs:
     - name: Test with pytest
       run: |
         cd packages/http_server
-        ls
         python -m unittest discover -s tests -v

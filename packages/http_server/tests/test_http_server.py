@@ -44,8 +44,6 @@ class TestHttpServer(unittest.TestCase):
 
 @ddt
 class TestAscyncHttpServer(unittest.IsolatedAsyncioTestCase):
-    
-
     async def asyncSetUp(self):
         self.srv = HttpServer(port=8081)
         self.task = asyncio.create_task(self.srv.run())
@@ -80,7 +78,75 @@ class TestAscyncHttpServer(unittest.IsolatedAsyncioTestCase):
         for key in expected_headers:
             self.assertTrue(key in response.headers, f"header {key} not found")
             self.assertTrue(response.headers[key] == expected_headers[key], f"header {key}: got: {response.headers[key]}, expected {expected_headers[key]}")
-       
+    
+    @data(
+            ('TEST',                                                {'Content-Length': '4', 'Host': '127.0.0.1:8081'}),
+            ({"key1": "value1", "key2": {"key2.1": "value2.1"}},    {'Content-Type': 'application/json', 'Content-Length': '50', 'Host': '127.0.0.1:8081'}),
+            (["a", "b", "c"],                                       {'Content-Type': 'application/json', 'Content-Length': '15', 'Host': '127.0.0.1:8081'}),
+        )
+    @unpack
+    async def test_add_route_post_text(self, test_content, expected_headers):
+        @self.srv.route("/test_route", methods=("POST", ))
+        def test_route(request: HttpRequest):
+            self.assertEqual(request.body, test_content)
+            for key in expected_headers:
+                self.assertTrue(key in request.headers, f"header {key} not found")
+                self.assertTrue(request.headers[key] == expected_headers[key], f"header {key}: got: {request.headers[key]}, expected {expected_headers[key]}")
+            return HttpResponse(request, "OK")
+        
+        async with httpx.AsyncClient() as client:
+            if type(test_content) is str:
+                response = await client.post("http://127.0.0.1:8081/test_route", content=test_content, headers={'Content-Type': 'text/html'})
+            if type(test_content) is dict:
+                response = await client.post("http://127.0.0.1:8081/test_route", json=test_content)
+            if type(test_content) is list:
+                response = await client.post("http://127.0.0.1:8081/test_route", json=test_content)
+        
+        self.assertEqual(response.status_code, 200)
+        if type(test_content) is str:
+            self.assertEqual(response.content.decode("utf-8"), "OK")
+
+    
+    async def test_add_route_error_404(self):        
+        async with httpx.AsyncClient() as client:
+            response = await client.get("http://127.0.0.1:8081/test_route")
+        
+        self.assertEqual(response.status_code, 404)
+
+    
+    async def test_add_route_error_405_Get(self):        
+        @self.srv.route("/test_route")
+        def test_route(request: HttpRequest):
+            return HttpResponse(request, "OK")
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post("http://127.0.0.1:8081/test_route", content="")
+        
+        self.assertEqual(response.status_code, 405)
+
+    
+    async def test_add_route_error_405_Post(self):        
+        @self.srv.route("/test_route", methods=("POST", ))
+        def test_route(request: HttpRequest):
+            return HttpResponse(request, "OK")
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get("http://127.0.0.1:8081/test_route")
+        
+        self.assertEqual(response.status_code, 405)
+
+    
+    async def test_add_route_error_500(self):        
+        @self.srv.route("/test_route")
+        def test_route(request: HttpRequest):
+            a = 1/0
+            return HttpResponse(request, "OK")
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get("http://127.0.0.1:8081/test_route")
+        
+        self.assertEqual(response.status_code, 500)
+
 
 if __name__ == '__main__':
     unittest.main()

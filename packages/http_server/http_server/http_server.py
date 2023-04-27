@@ -221,18 +221,18 @@ class HttpServer:
                     if request.method in self.routes[request.url][0]:
                         try:
                             response = self.routes[request.url][1](request)
-                        except:
-                            response = HttpError(request, 500)     
+                        except Exception as e:
+                            response = HttpError(request, 500, message="Internal Server Error: " + str(e))     
                     else:
-                        response = HttpError(request, 405, f"Method {request.method} not allowed")            
+                        response = HttpError(request, 405, f"Method {request.method} not allowed on route {request.url}")            
                 elif request.url in self.async_routes:
                     if request.method in self.async_routes[request.url][0]:
                         try:
                             response = await self.async_routes[request.url][1](request)
-                        except:
-                            response = HttpError(request, 500)                    
+                        except Exception as e:
+                            response = HttpError(request, 500, message="Internal Server Error: " + str(e))                 
                     else:
-                        response = HttpError(request, 405, f"Method {request.method} not allowed")
+                        response = HttpError(request, 405, f"Method {request.method} not allowed on route {request.url}")            
                 else:
                     response = HttpError(request, 404, f"URL {request.url} not found")
                 
