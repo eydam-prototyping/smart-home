@@ -78,8 +78,8 @@ class TestAscyncHttpServer(unittest.IsolatedAsyncioTestCase):
         if type(test_content) is dict:
             self.assertEqual(response.content.decode("utf-8"), json.dumps(test_content))
         for key in expected_headers:
-            self.assertTrue(key in response.headers)
-            self.assertTrue(response.headers[key] == expected_headers[key])
+            self.assertTrue(key in response.headers, f"header {key} not found")
+            self.assertTrue(response.headers[key] == expected_headers[key], f"header {key}: got: {response.headers[key]}, expected {expected_headers[key]}")
        
 
 if __name__ == '__main__':
