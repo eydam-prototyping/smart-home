@@ -3,10 +3,11 @@ from http_server import HttpServer, HttpRequest, HttpResponse
 import httpx
 import asyncio
 import json
-import time
 from ddt import ddt, data, unpack
+import sys
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 class TestHttpServer(unittest.TestCase):
     def setUp(self) -> None:
