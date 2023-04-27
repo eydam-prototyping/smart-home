@@ -44,7 +44,7 @@ loop.create_task(srv.run())
 loop.run_forever()
 ```
 
-You can access the http server with `curl`:
+You can access the http server with `curl` or a web browser:
 
 ```powershell
 tobias@Tobias-DellXPS:~$ curl http://192.168.10.45:8080/state
@@ -61,3 +61,4 @@ Request: GET /state -> 200 Running
 Request: POST /state -> 200 Stopped
 ```
 
+For more details see: https://eydam-prototyping-smart-home.readthedocs.io/en/latest/packages_http_server.html

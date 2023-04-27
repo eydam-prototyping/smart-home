@@ -74,6 +74,15 @@ class HttpRequest:
 
 class HttpResponse:
     def __init__(self, request: HttpRequest, data: any, code: int=200, headers=None, default_headers: bool=True):
+        """Initialize a http response. This is the return value of a route handler.
+
+        Args:
+            request (HttpRequest): the request, on which this is the response
+            data (any): the data (body), that is returned inside this response.
+            code (int, optional): the http status code. Defaults to 200.
+            headers (dict, optional): if you want to pass additional headers. Defaults to None.
+            default_headers (bool, optional): if you want to send default headers (Content-Type, Content-Length, ...). Defaults to True.
+        """
         self.request = request
         self.data = data
         self.code = code
@@ -143,6 +152,13 @@ class HttpResponse:
 
 class HttpError(HttpResponse):
     def __init__(self, request: HttpRequest, code: int, message: str=None):
+        """Initialize a http error
+
+        Args:
+            request (HttpRequest): the request, on which this is the response.
+            code (int): the http status code.
+            message (str, optional): if you don't want to send the default message. Defaults to None.
+        """
         if message is not None:
             super().__init__(request, message, code)
         else:
