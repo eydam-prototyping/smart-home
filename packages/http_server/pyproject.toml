@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mp_http_server_eydam_prototyping"
+version = "0.0.1"
+authors = [
+  { name="Tobias Eydam", email="eydam-prototyping@outlook.com" },
+]
+description = "A minimal http server running on MicroPython"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: Implementation :: MicroPython",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/eydam-prototyping/smart-home/tree/master/packages/http_server"
