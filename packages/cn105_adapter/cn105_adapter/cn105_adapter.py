@@ -7,7 +7,9 @@ import sys
 
 if sys.implementation.name == "cpython":
     import asyncio
-    from serial_asyncio import open_serial_connection
+    import platform
+    if platform.node() == "Tobias-DellXPS":
+        from serial_asyncio import open_serial_connection
 
 if sys.implementation.name == "micropython":
     import uasyncio as asyncio
