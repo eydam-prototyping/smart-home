@@ -10,7 +10,7 @@ if sys.implementation.name == "cpython":
 
 class TestAscyncHttpServer(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        if platform.node() == "Tobias-DellXPS":
+        if platform.node() != "Tobias-DellXPS":
             # Tests will fail, if there is no COM50 <--> COM51 connection.
             self.skipTest("specific setup required")
         self.sim_running = True
@@ -43,15 +43,15 @@ class TestAscyncHttpServer(unittest.IsolatedAsyncioTestCase):
     
     async def test_connect(self):
         adp = cn105_adapter.CN105Server(tx=0)
-        await adp.start_sim()
+        await adp._start_sim()
         await adp.connect()
-        adp.stop_sim()
+        adp._stop_sim()
     
     async def test_getData(self):
         adp = cn105_adapter.CN105Server(tx=0)
-        await adp.start_sim()
+        await adp._start_sim()
         await adp.connect()
-        state = await adp.get_state(2)
-        print(state.data)
-        adp.stop_sim()
+        state = await adp.get_data(2)
+        self.assertTrue(state.data == {'power': 0, 'mode': 0, 'tempSet': 0, 'fan': 0, 'vane': 0, 'dir': 0})
+        adp._stop_sim()
         

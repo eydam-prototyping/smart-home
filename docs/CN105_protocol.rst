@@ -1,3 +1,5 @@
+.. _CN105_protocol:
+
 CN105 Protocol
 **************
 
