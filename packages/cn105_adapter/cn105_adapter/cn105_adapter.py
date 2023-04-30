@@ -8,6 +8,7 @@ import sys
 if sys.implementation.name == "cpython":
     import asyncio
     import platform
+    from typing import Dict, List, Tuple
     if platform.node() == "Tobias-DellXPS":
         from serial_asyncio import open_serial_connection
 
@@ -88,11 +89,11 @@ dirMapping = [
     (0x0C, "SWING")
 ]
 
-def rawToPhys(mapping: list[tuple], raw:int) -> str or int:
+def rawToPhys(mapping: List[Tuple[int, str or int]], raw:int) -> str or int:
     """Converts the raw value to a physical value.
 
     Args:
-        mapping (list[tuple]): The mapping. Could be `cn105_adapter.powerMapping`, `cn105_adapter.modeMapping`, 
+        mapping (List[Tuple[int, str or int]]): The mapping. Could be `cn105_adapter.powerMapping`, `cn105_adapter.modeMapping`, 
             `cn105_adapter.tempSetMapping`, `cn105_adapter.tempRoomMapping`, `cn105_adapter.fanMapping`, 
             `cn105_adapter.vaneMapping` or `cn105_adapter.dirMapping`.
         raw (int): The raw value.
@@ -141,12 +142,12 @@ class CN105Request:
             packet_type (int): Type of the packet (CONNECT/GET/SET).
             payload (list[int]): The payload.
     """
-    def __init__(self, packet_type:int, payload:list[int]):
+    def __init__(self, packet_type:int, payload:List[int]):
         """Initializes the Request.
 
         Args:
             packet_type (int): Type of the packet (CONNECT/GET/SET).
-            payload (list[int]): The payload.
+            payload (List[int]): The payload.
         """
         self.packet_type = packet_type
         self.payload = payload
@@ -197,12 +198,12 @@ class CN105SetDataRequest(CN105Request):
             ValueError: If the dict is empty.
             ValueError: If the dict contains a key, that is not allowed in this packet.
     """
-    def __init__(self, rtype:int=0x02, data:dict=None):
+    def __init__(self, rtype:int=0x02, data:Dict=None):
         """Initializes the Set Data Request.
 
         Args:
             rtype (int, optional): Type of the Get Date request. Currently, only 0x02 is allowed. Defaults to 0x02.
-            data (dict, optional): Data, that is set on the in this packet. Defaults to None.
+            data (Dict, optional): Data, that is set on the in this packet. Defaults to None.
 
         Raises:
             ValueError: If the dict is empty.
@@ -232,11 +233,11 @@ class CN105Response:
         Raises:
             ValueError: If the raw content couldn't be parsed.
     """
-    def __init__(self, raw:bytes or list[int]):
+    def __init__(self, raw:bytes or List[int]):
         """Initializes the Response and parses the payload.
 
         Args:
-            raw (bytes or list[int]): The data, that was received from the device.
+            raw (bytes or List[int]): The data, that was received from the device.
 
         Raises:
             ValueError: If the raw content couldn't be parsed.
@@ -375,7 +376,7 @@ class CN105Server:
             print("failed")
             return None
 
-    async def set_data(self, data: dict) -> CN105Response:
+    async def set_data(self, data: Dict) -> CN105Response:
         """Send a Set Data Request to the CN105 device.
 
         Args:
