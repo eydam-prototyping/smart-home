@@ -2,6 +2,7 @@ import unittest
 import cn105_adapter
 import asyncio
 import sys
+import platform
 import ac_sim
 
 if sys.implementation.name == "cpython":
@@ -9,6 +10,9 @@ if sys.implementation.name == "cpython":
 
 class TestAscyncHttpServer(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
+        if platform.node() == "Tobias-DellXPS":
+            # Tests will fail, if there is no COM50 <--> COM51 connection.
+            self.skipTest("specific setup required")
         self.sim_running = True
 
         async def run_sim():
